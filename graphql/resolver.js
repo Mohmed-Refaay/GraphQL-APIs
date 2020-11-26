@@ -89,8 +89,7 @@ module.exports = {
     const post = new Post({
       title,
       content,
-      imageUrl:
-        "/images/2020-11-14T12-39-15.865Z-WhatsApp Image 2020-11-10 at 2.10.02 AM (1).jpeg",
+      imageUrl: "/images/walter.jpg",
       creator: user,
     });
 
@@ -108,7 +107,11 @@ module.exports = {
     };
   },
 
-  getPosts: async function ({ currentPage }) {
+  getPosts: async function ({ currentPage }, req) {
+    if (!req.isAuth) {
+      errorHandler("Not Authenticated!!", 401);
+    }
+
     const totalItems = await Post.find().countDocuments();
 
     const posts = await Post.find()
@@ -118,8 +121,30 @@ module.exports = {
       .limit(2);
 
     return {
-      posts: posts,
+      posts: posts.map((p) => ({
+        ...p._doc,
+        _id: p._id.toString(),
+        createdAt: p.createdAt.toISOString(),
+        updatedAt: p.updatedAt.toISOString(),
+      })),
       totalItems,
+    };
+  },
+
+  deletePost: async function ({ postId }, req) {
+    if (!req.isAuth) {
+      errorHandler("Not Authenticated!!", 401);
+    }
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      errorHandler("Post not found!!", 404);
+    }
+
+    const deletePost = await Post.findByIdAndRemove(postId);
+
+    return {
+      message: "Post Deleted",
     };
   },
 };

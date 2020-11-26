@@ -34,9 +34,15 @@ module.exports = buildSchema(`
         imageUrl: String!
 
     }
+
+    type message {
+        message: String!
+    }
+
     type MutationRoot {
         createUser(userInput: userData): User!, userName: String!
         createPost(postInput: postData): Post!
+        deletePost(postId: String!): message!
     }
 
     type CurrentUser {
