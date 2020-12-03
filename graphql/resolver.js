@@ -147,4 +147,40 @@ module.exports = {
       message: "Post Deleted",
     };
   },
+
+  getStatus: async function (args, req) {
+    if (!req.isAuth) {
+      errorHandler("Not Authenticated!!", 401);
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      errorHandler("user not found!!", 404);
+    }
+
+    return {
+      status: user.status,
+    };
+  },
+
+  updateStatus: async function ({ newStatus }, req) {
+    if (!req.isAuth) {
+      errorHandler("Not Authenticated!!", 401);
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      errorHandler("user not found!!", 404);
+    }
+
+    user.status = newStatus;
+
+    const updatedUser = await user.save();
+
+    return {
+      message: "Status Updated",
+    };
+  },
 };

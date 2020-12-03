@@ -43,6 +43,7 @@ module.exports = buildSchema(`
         createUser(userInput: userData): User!, userName: String!
         createPost(postInput: postData): Post!
         deletePost(postId: String!): message!
+        updateStatus(newStatus: String!): message!
     }
 
     type CurrentUser {
@@ -55,9 +56,14 @@ module.exports = buildSchema(`
         totalItems: Int!
     }
 
+    type Status {
+        status: String!
+    }
+
     type Query {
         login(email: String!, password: String!): CurrentUser!
         getPosts(currentPage: Int!): allPosts!
+        getStatus: Status!
     }
 
     schema {
